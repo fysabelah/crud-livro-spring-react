@@ -1,24 +1,25 @@
-import React, { Component} from 'react';
+import React, {useState} from 'react';
 import Header from './Header';
 import '../Styles/Comp-CRUD.css';
 import Botao from './Botao';
 import { Button} from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 
+function Autor(){
+    const [autores, setAutores] = useState([]);
 
-class Autor extends Component{
-    constructor(props){
-        super(props);
-        this.state = {autores: []};
-    }
+    useEffect(() => {
+        recuperaAutores();
+    }, []);
 
-    componentDidMount(){
+    const recuperaAutores = () => {
         fetch('/autores')
             .then(response => response.json())
-            .then(data => this.setState({autores:data}));
+            .then(data => setAutores(data));
     }
 
-    async remove(id){
+    const removeAutores = async(id) => {
         await fetch(`/autores/${id}`, {
             method: 'DELETE',
             headers:{
@@ -26,57 +27,65 @@ class Autor extends Component{
                 'Content-Type': 'application/json'
             }
         }).then(() => {
-            let updateAutores = [...this.state.autores].filter(i => i.idAutor !== id);
-            this.setState({autores:updateAutores})
+            recuperaAutores();
         })
     }
 
-    render(){
-        const {autores} = this.state;
 
-        const todosAutores = autores.map(autor => {
-            return(
-                <tr key = {autor.idAutor}>
-                    <td> {autor.idAutor}</td>
-                    <td> {autor.nmAutor}</td>
-                    <td>
-                        <Button className = "buttonAlterar" tag = {Link} to = {"/autores/" + autor.idAutor}>Alterar</Button>{' '}
-                        <Button className = "buttonExcluir" onClick = {() => this.remove(autor.idAutor)}>Excluir</Button>
-                    </td>
-                </tr>  
-            )
-        });
+    const atualizaAutores = async(id) => {
+        let autorUpdate = [...autores].filter(i => i.idAutor == id);
 
+        /*Pegar dados do autor e inserir no input*/
+    }
+
+    const cadastraAutor = () => {
+
+    }
+
+    const todosAutores = autores.map(autor => {
         return(
-            <div>
-                <Header titulo = "Gerenciar Autores(as)"/>
-                <div className = "Comp-CRUD">
-                    <div className = "Botoes">
-                        <Botao titulo = "Home" link = "/"/>
-                        <Botao titulo = "Livros" link = "/livros"/>
+            <tr key = {autor.idAutor}>
+                <td> {autor.idAutor}</td>
+                <td> {autor.nmAutor}</td>
+                <td>
+                    <Button className = "buttonAlterar" onClick = {() => atualizaAutores(autor.idAutor)}>Alterar</Button>{' '}
+                    <Button className = "buttonExcluir" onClick = {() => removeAutores(autor.idAutor)}>Excluir</Button>
+                </td>
+            </tr>  
+        )
+    });
+
+    return(
+        <div>
+            <Header titulo = "Gerenciar Autores(as)"/>
+            <div className = "Comp-CRUD">
+                <div className = "Botoes">
+                    <Botao titulo = "Home" link = "/"/>
+                    <Botao titulo = "Livros" link = "/livros"/>
+                </div>
+                <div className = "Crud-Table">
+                    <div className = "tituloTabela"><h3>Autores</h3></div>
+                    <div className = "corpoTabela">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>        
+                            <tbody>
+                                {todosAutores}
+                            </tbody>
+                        </table>
                     </div>
-                    <div className = "Crud-Table">
-                        <div className = "tituloTabela"><h3>Autores</h3></div>
-                        <div className = "corpoTabela">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Nome</th>
-                                        <th>Ações</th>
-                                    </tr>
-                                </thead>        
-                                <tbody>
-                                    {todosAutores}
-                                </tbody>
-                            </table>
-                        </div>
-                        <Button className = "buttonCadastrar" tag = {Link} to = "/autores/novo">Cadastrar</Button>
-                    </div>
+                    <Button className = "buttonCadastrar">Cadastrar</Button>
                 </div>
             </div>
-        )
-    }
+
+        </div>
+    )
 }
+
 
 export default Autor;
