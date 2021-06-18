@@ -59,7 +59,7 @@ function Autor(){
             },
             body: JSON.stringify(atualizar),          
         }).then(() => {
-            setShowModal(false);
+            setShowModalAtualiza(false);
             getAutores();
             atualizar.idAutor = '';
             atualizar.nmAutor = '';
@@ -86,7 +86,7 @@ function Autor(){
     const modalCadastro = () => (
         <div className = "Modal">
             <form className = "SubModal">
-                <h4>Cadastrar Autor(a)</h4>
+                <h3>Cadastrar Autor(a)</h3>
                 <label>
                     Nome
                     <br/>
@@ -104,7 +104,7 @@ function Autor(){
     const modalAtualiza = () => (
         <div className = "Modal">
             <form className = "SubModal">
-                <h4>Atualizar Autor(a)</h4>
+                <h3>Atualizar Autor(a)</h3>
                 <label>
                     Nome
                     <br/>
@@ -120,19 +120,19 @@ function Autor(){
     )
 
     const insertAutor = () => {
-        atualizar.nmAutor = nome;
         fetch("/autores" , {
             method: 'POST',
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(atualizar),
+            body: JSON.stringify({
+                idAutor: '',
+                nmAutor: nome
+            }),
         }).then(() => {
-            setShowModalAtualiza(false);
+            setShowModal(false);
             getAutores();
-            atualizar.idAutor = '';
-            atualizar.nmAutor = '';
         })
     }
 

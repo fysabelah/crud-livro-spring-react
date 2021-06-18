@@ -24,20 +24,30 @@
     border-radius: 4px;
 }
 
-.SubModal h4{
+.SubModalAutor{
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 20%;
+    height: 22%;
+    border-radius: 4px;
+}
+
+.Modal h3{
     text-align: center;
 }
 
-.SubModal input, label{
+.Modal input, label, select{
     margin-left: 10px;
 }
 
-.SubModal input{
+.Modal input, select{
     width: 200px;
     margin-bottom: 10px;
 }
 
-.SubModal Button{
+.Modal Button{
     float: left;
     margin: 2px;
 }
