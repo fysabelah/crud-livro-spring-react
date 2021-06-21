@@ -4,7 +4,6 @@ import '../Styles/Botao.css';
 import '../Styles/Comp-CRUD.css';
 import Botao from './Botao';
 import { Button} from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import '../Styles/Modal.css';
 
@@ -14,6 +13,8 @@ function Livro(){
     const [idAutor, setIdAutor] = useState('');
     const [titulo, setTitulo] = useState('');
     const [showModalCadastro, setShowModalCadastro] = useState(false);
+    const [showModalAtualizar, setShowModalAtualizar] = useState(false);
+    const [idLivroUpd, setIdLivroUpd] = useState('');
 
     useEffect(() => {
         getLivros();
@@ -48,18 +49,41 @@ function Livro(){
         setTitulo(event.target.value);
     }
 
+    useEffect(() => {
+        console.log(idAutor);
+    }, [idAutor]);
+
     const insertLivro = () => {
-        fetch("livros", {
+        fetch("/livros", {
             method: 'POST',
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                
+                tituloLivro: titulo,
+                autor: {idAutor}
             })
         }).then(() => {
             setShowModalCadastro(false);
+            getLivros();
+        })
+    }
+
+    const updateLivro = () => {
+        fetch("/livros", {
+            method: 'PUT',
+            headers:{
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                idLivro: idLivroUpd,
+                tituloLivro: titulo,
+                autor: {idAutor}
+            })
+        }).then(() => {
+            setShowModalAtualizar(false);
             getLivros();
         })
     }
@@ -79,7 +103,7 @@ function Livro(){
                     <br/>
                     <select value = {idAutor} onChange = {e => setIdAutor(e.target.value)}>
                         {autores.map((autor) => 
-                            <option value = {autor.idAutor} key = {autor.idAutor}>{autor.nmAutor}</option>
+                            <option value = {autor.idAutor}>{autor.nmAutor}</option>
                         )}    
                     </select>
                 </label>
@@ -92,6 +116,41 @@ function Livro(){
         </div>
     )
 
+    const modalAtualizar = () => (
+        <div className = "Modal">
+            <form className = "SubModalAutor">
+                <h3>Alterar Livro</h3>
+                <label>
+                    Título
+                    <br/>
+                    <input value = {titulo} type = "text" name = "titulo" onChange  = {recuperaTitulo}/>
+                </label>
+                <br/>
+                <label>
+                    Escolha o Autor
+                    <br/>
+                    <select value = {idAutor} onChange = {e => setIdAutor(e.target.value)}>
+                        {autores.map((autor) => 
+                            <option value = {autor.idAutor}>{autor.nmAutor}</option>
+                        )}    
+                    </select>
+                </label>
+                <br/>
+                <div className = "butoesModal">
+                    <Button className = "buttonExcluir" onClick = {() => setShowModalAtualizar(false)}>Cancelar</Button>
+                    <Button className = "buttonCadastrar" onClick = {() => updateLivro()}>Salvar</Button>
+                </div>
+            </form>
+        </div>
+    )
+
+    const atualizaLivro = (livro) => {
+        setShowModalAtualizar(true);
+        setIdLivroUpd(livro.idLivro);
+        setTitulo(livro.tituloLivro);
+        setIdAutor(livro.autor.idAutor);
+    }
+
     const corpoTabelaAutores = livros.map(livro => {
         return(
             <tr key = {livro.idLivro}>
@@ -99,7 +158,7 @@ function Livro(){
                 <td>{livro.tituloLivro}</td>
                 <td>{livro.autor.nmAutor}</td>
                 <td>
-                    <Button className = "buttonAlterar" tag = {Link} to = {"/livros/" + livro.idLivro}>Alterar</Button>{' '}
+                    <Button className = "buttonAlterar" onClick = {() => atualizaLivro(livro)}>Alterar</Button>{' '}
                     <Button className = "buttonExcluir" onClick = {() => deleteLivros(livro.idLivro)}>Excluir</Button>
                 </td>
             </tr>
@@ -135,6 +194,7 @@ function Livro(){
                 </div>
             </div>
             {showModalCadastro ? modalCadastro(): null}
+            {showModalAtualizar ? modalAtualizar(): null}
         </div>
     )
 }
