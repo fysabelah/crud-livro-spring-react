@@ -34,11 +34,14 @@ public class AutorBusiness {
     }
 
     public void validarNome(Autor autor) throws AutorException{
-        if(autor.getNmAutor() == null || autor.getNmAutor() == " ")
+        if (autor.getNmAutor() == null || autor.getNmAutor().trim().isEmpty())
             throw new AutorException("0101");
     }
 
     public void delete(Integer id){
+        // busca livros com autor
+        // se algum livro existe dispara BAD_REQUEST
+        // senão, realmente deleta
         repository.deleteById(id);
     }
 

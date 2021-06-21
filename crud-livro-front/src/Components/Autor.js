@@ -3,7 +3,12 @@ import Header from './Header';
 import '../Styles/Comp-CRUD.css';
 import '../Styles/Modal.css';
 import Botao from './Botao';
-import { Button} from 'react-bootstrap';
+import { Button} from 'react-bootstrap'; 
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+toast.configure();
 
 function Autor(){
     const [autores, setAutores] = useState([]);
@@ -31,14 +36,19 @@ function Autor(){
     }
 
     const deleteAutores = async(id) => {
-        await fetch(`/autores/${id}`, {
+        fetch(`/autores/${id}`, {
             method: 'DELETE',
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-        }).then(() => {
+        }).then((response) => {
+            if (!response.ok) {
+                throw Error(response.statusText);
+            }
             getAutores();
+        }).catch(() => {
+            toast.warn('O autor possui livros cadastrados!', {position: toast.POSITION.TOP_CENTER, autoClose: 3000});
         })
     }
 

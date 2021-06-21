@@ -49,10 +49,6 @@ function Livro(){
         setTitulo(event.target.value);
     }
 
-    useEffect(() => {
-        console.log(idAutor);
-    }, [idAutor]);
-
     const insertLivro = () => {
         fetch("/livros", {
             method: 'POST',
@@ -103,7 +99,7 @@ function Livro(){
                     <br/>
                     <select value = {idAutor} onChange = {e => setIdAutor(e.target.value)}>
                         {autores.map((autor) => 
-                            <option value = {autor.idAutor}>{autor.nmAutor}</option>
+                            <option key={autor.idAutor} value = {autor.idAutor}>{autor.nmAutor}</option>
                         )}    
                     </select>
                 </label>
@@ -131,7 +127,7 @@ function Livro(){
                     <br/>
                     <select value = {idAutor} onChange = {e => setIdAutor(e.target.value)}>
                         {autores.map((autor) => 
-                            <option value = {autor.idAutor}>{autor.nmAutor}</option>
+                            <option key={autor.idAutor} value = {autor.idAutor}>{autor.nmAutor}</option>
                         )}    
                     </select>
                 </label>
